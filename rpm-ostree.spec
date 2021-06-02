@@ -4,7 +4,7 @@
 
 Name:		rpm-ostree
 Version:	2018.8
-Release:	2
+Release:	3
 Summary:	Hybrid image/package system
 License:	LGPLv2+
 URL:		https://github.com/projectatomic/rpm-ostree
@@ -32,7 +32,7 @@ BuildRequires:   /usr/bin/python3 autoconf automake libtool git chrpath libattr-
 BuildRequires:   gtk-doc gperf gnome-common /usr/bin/g-ir-scanner ostree-devel cmake
 BuildRequires:   polkit-devel json-glib-devel rpm-devel libarchive-devel systemd-devel 
 BuildRequires:   libcap-devel libcurl-devel librepo-devel expat-devel check-devel 
-BuildRequires:   pkgconfig(libsolv)
+BuildRequires:   pkgconfig(libsolv) gcc gcc-c++
 
 Requires:	 ostree bubblewrap fuse 
 
@@ -100,5 +100,8 @@ Header files for rpm-ostree.
 %{_mandir}/man*/*
 
 %changelog
+* Mon May 31 2021 huanghaitao <huanghaitao8@huawei.com> - 2018.8-3
+- Completing build dependencies to fix gcc/gcc-c++ compiler missing error
+
 * Sat Oct 19 2019 openEuler Buildteam <buildteam@openeuler.org> - 2018.8-2
 - Package init
