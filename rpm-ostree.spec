@@ -4,7 +4,7 @@
 
 Name:		rpm-ostree
 Version:	2018.8
-Release:	3
+Release:	4
 Summary:	Hybrid image/package system
 License:	LGPLv2+
 URL:		https://github.com/projectatomic/rpm-ostree
@@ -33,6 +33,7 @@ BuildRequires:   gtk-doc gperf gnome-common /usr/bin/g-ir-scanner ostree-devel c
 BuildRequires:   polkit-devel json-glib-devel rpm-devel libarchive-devel systemd-devel 
 BuildRequires:   libcap-devel libcurl-devel librepo-devel expat-devel check-devel 
 BuildRequires:   pkgconfig(libsolv) gcc gcc-c++
+BuildRequires:   chrpath
 
 Requires:	 ostree bubblewrap fuse 
 
@@ -71,6 +72,14 @@ Header files for rpm-ostree.
 %{?rusttoolset}  %make_install 
 %delete_la 
 
+chrpath -d %{buildroot}%{_libdir}/librpmostree-1.so.1.0.0
+chrpath -d %{buildroot}%{_bindir}/rpm-ostree
+
+mkdir -p %{buildroot}/etc/ld.so.conf.d
+echo "%{_libdir}/%{name}" > %{buildroot}/etc/ld.so.conf.d/%{name}-%{_arch}.conf
+
+%ldconfig_scriptlets
+
 %files
 %defattr(-,root,root)
 %doc README.md
@@ -85,6 +94,7 @@ Header files for rpm-ostree.
 %{_prefix}/lib/systemd/system/*
 %{_datadir}/dbus-1/system-services
 %{_datadir}/polkit-1/actions/*.policy
+%config(noreplace) /etc/ld.so.conf.d/*
 
 %files       devel
 %defattr(-,root,root)
@@ -100,6 +110,12 @@ Header files for rpm-ostree.
 %{_mandir}/man*/*
 
 %changelog
+* Fri Sep 10 2021 gaihuiying <gaihuiying1@huawei.com> - 2018.8-4
+- Type:bugfix
+- ID:NA
+- SUG:NA
+- DESC:remove rpath of rpm-ostree's binary files
+
 * Mon May 31 2021 huanghaitao <huanghaitao8@huawei.com> - 2018.8-3
 - Completing build dependencies to fix gcc/gcc-c++ compiler missing error
 
