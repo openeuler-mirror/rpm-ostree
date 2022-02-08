@@ -4,13 +4,14 @@
 
 Name:		rpm-ostree
 Version:	2018.8
-Release:	4
+Release:	5
 Summary:	Hybrid image/package system
 License:	LGPLv2+
 URL:		https://github.com/projectatomic/rpm-ostree
 Source0:	https://github.com/coreos/rpm-ostree/archive/v%{version}.tar.xz#/%{name}-%{version}.tar.xz 
 
 Patch0:         eliminate-rpmostree-differences.patch
+Patch1:         Fix-incorrect-usage-of-the-fail_unless-macro.patch
 
 %if %{with rust}
 
@@ -110,6 +111,12 @@ echo "%{_libdir}/%{name}" > %{buildroot}/etc/ld.so.conf.d/%{name}-%{_arch}.conf
 %{_mandir}/man*/*
 
 %changelog
+* Tue Feb 08 2022 xu_ping <xuping33@huawei.com> - 2018.8-5
+- Type:bugfix
+- ID:NA
+- SUG:NA
+- DESC: Fix incorrect usage of the fail_unless macro
+
 * Fri Sep 10 2021 gaihuiying <gaihuiying1@huawei.com> - 2018.8-4
 - Type:bugfix
 - ID:NA

@@ -1,0 +1,36 @@
+From 4f3f747cdf3e5d7ab0dadc4f25bca56fb16ce923 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Luk=C3=A1=C5=A1=20Hr=C3=A1zk=C3=BD?= <lhrazky@redhat.com>
+Date: Thu, 6 Aug 2020 10:59:59 +0200
+Subject: [PATCH] tests: Fix incorrect usage of the fail_unless macro
+
+---
+libdnf/tests/hawkey/test_query.cpp | 2 +-
+libdnf/tests/hawkey/test_sack.cpp  | 2 +-
+2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/libdnf/tests/hawkey/test_query.cpp b/libdnf/tests/hawkey/test_query.cpp
+index bf9626a..4235681 100644
+--- a/libdnf/tests/hawkey/test_query.cpp
++++ b/libdnf/tests/hawkey/test_query.cpp
+@@ -303,7 +303,7 @@ START_TEST(test_query_pkg)
+     hy_query_filter(q, HY_PKG_NAME, HY_EQ, "jay");
+     pset = hy_query_run_set(q);
+     hy_query_free(q);
+-    fail_unless(dnf_packageset_count(pset), 2);
++    fail_unless(dnf_packageset_count(pset) == 2);
+ 
+     // use hy_query_filter_package_in():
+     q = hy_query_create(test_globals.sack);
+diff --git a/libdnf/tests/hawkey/test_sack.cpp b/libdnf/tests/hawkey/test_sack.cpp
+index 2bb67f4..e5ed31b 100644
+--- a/libdnf/tests/hawkey/test_sack.cpp
++++ b/libdnf/tests/hawkey/test_sack.cpp
+@@ -84,7 +84,7 @@ START_TEST(test_list_arches)
+     const char ** arches = dnf_sack_list_arches(sack);
+ 
+     /* noarch, x86_64, athlon, i686, i586, i486, i386 */
+-    fail_unless(g_strv_length((gchar**)arches), 7);
++    fail_unless(g_strv_length((gchar**)arches) == 7);
+     ck_assert_str_eq(arches[3], "i686");
+ 
+     g_free(arches);
