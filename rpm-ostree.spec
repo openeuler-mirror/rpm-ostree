@@ -3,15 +3,12 @@
 %global __provides_exclude_from ^%{_libdir}/%{name}/.*$
 
 Name:		rpm-ostree
-Version:	2018.8
-Release:	5
+Version:	2022.1
+Release:	1
 Summary:	Hybrid image/package system
 License:	LGPLv2+
 URL:		https://github.com/projectatomic/rpm-ostree
 Source0:	https://github.com/coreos/rpm-ostree/archive/v%{version}.tar.xz#/%{name}-%{version}.tar.xz 
-
-Patch0:         eliminate-rpmostree-differences.patch
-Patch1:         Fix-incorrect-usage-of-the-fail_unless-macro.patch
 
 %if %{with rust}
 
@@ -34,7 +31,8 @@ BuildRequires:   gtk-doc gperf gnome-common /usr/bin/g-ir-scanner ostree-devel c
 BuildRequires:   polkit-devel json-glib-devel rpm-devel libarchive-devel systemd-devel 
 BuildRequires:   libcap-devel libcurl-devel librepo-devel expat-devel check-devel 
 BuildRequires:   pkgconfig(libsolv) gcc gcc-c++
-BuildRequires:   chrpath
+BuildRequires:   chrpath json-c-devel libmodulemd-devel sqlite-devel cppunit-devel
+BuildRequires:   glib2-devel gpgme-devel libsolv-tools make python3-devel python3-sphinx swig libsmartcols-devel
 
 Requires:	 ostree bubblewrap fuse 
 
@@ -63,7 +61,6 @@ Header files for rpm-ostree.
 
 %build
 %{?rusttoolset} env NOCONFIGURE=1 ./autogen.sh
-%define _configure %{?rusttoolset} ./configure
 %configure --disable-silent-rules --enable-gtk-doc \
            %{?with_rust:--enable-rust}
 
@@ -81,10 +78,13 @@ echo "%{_libdir}/%{name}" > %{buildroot}/etc/ld.so.conf.d/%{name}-%{_arch}.conf
 
 %ldconfig_scriptlets
 
+install -d -m 0755 %{buildroot}/etc/dbus-1/system.d/
+install -pm 0644 src/daemon/org.projectatomic.rpmostree1.conf %{buildroot}/etc/dbus-1/system.d/
+
 %files
 %defattr(-,root,root)
 %doc README.md
-%license COPYING
+%license COPYING.*
 %{_bindir}/*
 %{_sysconfdir}/dbus-1/system.d/*
 %{_sysconfdir}/rpm-ostreed.conf
@@ -95,6 +95,8 @@ echo "%{_libdir}/%{name}" > %{buildroot}/etc/ld.so.conf.d/%{name}-%{_arch}.conf
 %{_prefix}/lib/systemd/system/*
 %{_datadir}/dbus-1/system-services
 %{_datadir}/polkit-1/actions/*.policy
+%{_datadir}/dbus-1/system.d/org.projectatomic.rpmostree1.conf
+%{_datadir}/bash-completion/completions/rpm-ostree
 %config(noreplace) /etc/ld.so.conf.d/*
 
 %files       devel
@@ -111,11 +113,8 @@ echo "%{_libdir}/%{name}" > %{buildroot}/etc/ld.so.conf.d/%{name}-%{_arch}.conf
 %{_mandir}/man*/*
 
 %changelog
-* Tue Feb 08 2022 xu_ping <xuping33@huawei.com> - 2018.8-5
-- Type:bugfix
-- ID:NA
-- SUG:NA
-- DESC: Fix incorrect usage of the fail_unless macro
+* Wed Jan 19 2022 SimpleUpdate Robot <tc@openeuler.org> - 2022.1-1
+- Upgrade to version 2022.1
 
 * Fri Sep 10 2021 gaihuiying <gaihuiying1@huawei.com> - 2018.8-4
 - Type:bugfix
